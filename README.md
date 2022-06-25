@@ -1,4 +1,6 @@
-### Hi there 👋
+### Nmric
+
+No fuss controls for your fabrication machines.
 
 <!--
 **Nmric/nmric** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
