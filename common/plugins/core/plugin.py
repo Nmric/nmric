@@ -13,7 +13,7 @@ class Plugin:
         root_path = os.path.join(os.getcwd(), "common", "plugins")
         full_class_path = str(Path(inspect.getmodule(self).__file__))
 
-        return full_class_path.replace(root_path, "").replace(".py", "").replace("/", ".")[1:]
+        return full_class_path.replace(root_path, "").replace(".py", "").replace("/", ".").replace("\\", ".")[1:]
         
     def initialize(self):
         pass
