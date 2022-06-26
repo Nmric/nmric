@@ -16,3 +16,6 @@ class TerminalWidget(DisplayPlugin):
             </form>
         </div>
         """
+
+    def do_render(self) -> str:
+        return "DO TERM"

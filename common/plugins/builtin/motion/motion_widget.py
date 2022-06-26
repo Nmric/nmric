@@ -9,3 +9,6 @@ class MotionWidget(DisplayPlugin):
         return f"""
     <button type="button" hx-vals='{{"dir":"left", "len":5}}' hx-swap="none" hx-post="/plugin/send/{self.id}">Press</button>
     """
+
+    def do_render(self) -> str:
+        return "DO MOTION"
