@@ -44,6 +44,9 @@ def plugin_render(plugin_id: str) -> str:
     """
     # determine if the given ID matches any DisplayWidget plugins
     plugins = current_app.pm_builtin.get_plugins(DisplayPlugin)
+    print(plugins)
+    # for plugin in plugins:
+        # print(plugin.id)
 
     if plugin_id in plugins:
         return plugins[plugin_id].render()
