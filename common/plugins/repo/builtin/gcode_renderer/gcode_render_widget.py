@@ -7,6 +7,3 @@ class GcodeRenderer(DisplayPlugin):
 
     def render(self) -> str:
         return "GCODE!"
-
-    def do_render(self) -> str:
-        return "DO GCODE"

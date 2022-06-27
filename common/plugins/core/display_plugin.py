@@ -8,11 +8,14 @@ class DisplayPlugin(Plugin):
     def __init__(self, **args):
         super().__init__(args)
 
-    def render(self):
+    def render(self) -> str:
+        return "<b>N\A</b>"
+
+    def triggered(self):
         pass
 
-    def triggered(self, data: Dict):
+    def receive(self):
         pass
 
-    def respond(self, data: Dict):
+    def stream(self):
         pass

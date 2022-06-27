@@ -2,29 +2,15 @@ import zmq
 import time
 from multiprocessing import Process
 
-from common.plugins.core.plugin_manager import PluginManager
-from common.plugins.core import DisplayPlugin
 from flask import Flask, g
+from flask_sock import Sock
+
+from .webapp import WebApp
+
 
 HOST = "127.0.0.1"
 PORT = 6668
 
-class WebClient(Flask):
-    pm_builtin = PluginManager("common.plugins.builtin")
-    pm_repo = PluginManager("common.plugins.repo")
-    # pm = None
-
-    # def __init__(self):
-        # self.register_plugin_routes()
-
-    def register_plugin_routes(self) -> None:
-
-        plugins = self.pm_builtin.get_plugins(DisplayPlugin)
-        for plugin in plugins.values():
-            view_func = plugin.do_render
-            print("VIEW ",plugin.id)
-            self.route(f"/plugins/render/{plugin.id}", methods=["GET"], endpoint=f"{plugin.id}_do_render")(view_func)
-    
     
 # class Machine(Process):
 #     _stopped = False
@@ -57,8 +43,10 @@ class WebClient(Flask):
 # machine = Machine()
 # machine.start()
 
-app = WebClient(__name__)
-app.register_plugin_routes()
+app = WebApp(__name__)
+sock = Sock(app)
+
+app.register_plugin_routes(sock)
 
 app.config["DATABASE_URI"] = 'sqlite:///sqlite.db'
 #app.config["SQLALCHEMY_ECHO"] = False

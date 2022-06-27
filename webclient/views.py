@@ -37,44 +37,41 @@ def home() -> str:
     return render_template("base.html", element_layout=layout_html)
 
 
-@app.route("/plugin/render/<plugin_id>", methods=["GET"])
-def plugin_render(plugin_id: str) -> str:
-    """
-    Render the html of a plugin
-    """
-    # determine if the given ID matches any DisplayWidget plugins
-    plugins = current_app.pm_builtin.get_plugins(DisplayPlugin)
-    print(plugins)
-    # for plugin in plugins:
-        # print(plugin.id)
+# @app.route("/plugin/render/<plugin_id>", methods=["GET"])
+# def plugin_render(plugin_id: str) -> str:
+#     """
+#     Render the html of a plugin
+#     """
+#     # determine if the given ID matches any DisplayWidget plugins
+#     plugins = current_app.plugin_manager.get_plugins(DisplayPlugin)
 
-    if plugin_id in plugins:
-        return plugins[plugin_id].render()
-    else:
-        return "N/A"
+#     if plugin_id in plugins:
+#         return plugins[plugin_id].render()
+#     else:
+#         return "N/A"
 
-@app.route("/plugin/send/<plugin_id>", methods=["POST"])
-def plugin_send(plugin_id: str) -> str:
-    """
-    Send data without any sort of confirmation
-    """
+# @app.route("/plugin/send/<plugin_id>", methods=["POST"])
+# def plugin_send(plugin_id: str) -> str:
+#     """
+#     Send data without any sort of confirmation
+#     """
 
-    print(plugin_id)
-    print(dict(request.form))
-    print("DIR ",request.args.get("dir"))
-    # did we get valid data?
-    payload = {}
-    if request.is_json:
-        payload = request.get_json()
-        print("payload ", payload)
-    else:
-        return jsonify({"error": "request was not proper"})
+#     print(plugin_id)
+#     print(dict(request.form))
+#     print("DIR ",request.args.get("dir"))
+#     # did we get valid data?
+#     payload = {}
+#     if request.is_json:
+#         payload = request.get_json()
+#         print("payload ", payload)
+#     else:
+#         return jsonify({"error": "request was not proper"})
 
-    # determine if the given ID matches any DisplayWidget plugins
-    plugins = current_app.pm_builtin.get_plugins(DisplayPlugin)
+#     # determine if the given ID matches any DisplayWidget plugins
+#     plugins = current_app.plugin_manager.get_plugins(DisplayPlugin)
 
-    if plugin_id in plugins:
-        response = plugins[plugin_id].process(payload)
-        return jsonify(response)
-    else:
-        return jsonify({"error": "plugin not found"})
+#     if plugin_id in plugins:
+#         response = plugins[plugin_id].process(payload)
+#         return jsonify(response)
+#     else:
+#         return jsonify({"error": "plugin not found"})

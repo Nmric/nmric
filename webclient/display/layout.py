@@ -12,8 +12,7 @@ class Layout:
     def __init__(self):
         self.grid = [
             [1, 2, 2, 3],
-            [4, 2, 2, 5],
-            [None, 6, 6, None]
+            [None, 2, 2, None]
         ]
 
         # self.grid = [
@@ -22,9 +21,9 @@ class Layout:
         #     [None, 5, 5, None]
         # ]
 
-        self.gridMap = {1: "builtin.terminal.terminal_widget",
-                        2: "builtin.gcode_renderer.gcode_render_widget",
-                        3: "builtin.motion.motion_widget"}
+        self.gridMap = {1: "builtin.terminal",
+                        2: "builtin.gcode_renderer",
+                        3: "builtin.motion"}
 
     def generate(self) -> str:
         # build up boxes from grid tags
@@ -52,7 +51,7 @@ class Layout:
 
             if box["id"]:
                 layout += f'<div class="col-start-{box["cs"] + 1} col-end-{box["ce"] + 2} {row_span_tag} border-2"'
-                layout += f' hx-trigger="load" hx-get="/plugin/render/{box["id"]}"'
+                layout += f' hx-trigger="load" hx-get="/plugins/render/{box["id"]}"'
                 layout += f'></div>\n'
             else:
                 layout += f'<div class="col-start-{box["cs"] + 1} col-end-{box["ce"] + 2} {row_span_tag}">&nbsp;</div>'
