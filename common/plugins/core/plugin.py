@@ -1,13 +1,15 @@
 import inspect
 import os
-from pathlib import Path
+# from pathlib import Path
 
+from flask import send_from_directory, Response
 
 class Plugin:
 
     def __init__(self, description = "N/A"):
         self.description = description
         self.id = self.get_id()
+        self.plugin_path = self.get_plugin_path()
 
     def get_id(self) -> str:
         """
@@ -15,11 +17,16 @@ class Plugin:
         
         :returns: unique ID for this plugin
         """
-        root_path = os.path.join(os.getcwd(), "common", "plugins")
-        full_class_path = str(Path(inspect.getmodule(self).__file__))
+        full_class_path = str(self.get_plugin_path())
+        root_path = os.path.join(os.getcwd(), "common", "plugins", "repo")
 
-        full_id = full_class_path.replace(root_path, "").replace(".py", "").replace("/", ".").replace("\\", ".")[1:]
-        return ".".join(full_id.split(".")[1:-1])  # remove the first and last part (which don't contain usefull info)
+        return full_class_path.replace(root_path, "").replace("/", ".").replace("\\", ".")[1:]
         
+    def get_plugin_path(self) -> str:
+        return os.path.dirname(inspect.getfile(self.__class__))
+
     def initialize(self):
         pass
+
+    def get_static_file(self, filename) -> Response:
+        return send_from_directory(str(os.path.join(self.plugin_path, "static")), filename)

@@ -1,7 +1,21 @@
+import json
+import time
+
 from flask import render_template, request, jsonify, current_app, Response
 
 from common.plugins.core import DisplayPlugin
 
+class MotionMonitor:
+    current_axis_movement = None  # type: str
+    current_press_start = 0
+    is_locked = False
+
+    def __enter__(self):
+        print("connected motion")
+        return self
+  
+    def __exit__(self, exc_type, exc_value, traceback):
+        print("Disconnected motion")
 
 class MotionWidget(DisplayPlugin):
     def __init__(self):
@@ -9,9 +23,10 @@ class MotionWidget(DisplayPlugin):
         super().__init__(description=description)
 
     def render(self) -> str:
-        return f"""
-    <button type="button" hx-vals='{{"dir":"left", "len":5}}' hx-swap="none" hx-post="/plugins/post/{self.id}">Press</button>
-    """
+        return self.render_template("controls.html", id=self.id)
+    #     return f"""
+    # <button type="button" hx-vals='{{"dir":"left", "len":5}}' hx-swap="none" hx-post="/plugins/post/{self.id}">Press</button>
+    # """
 
     def receive(self) -> Response:
         vars = (dict(request.form))
@@ -29,3 +44,53 @@ class MotionWidget(DisplayPlugin):
         #     return jsonify({"error": "request was not proper"})
 
         return jsonify({"action": "ok!"})
+
+    def stream(self, websocket) -> str:
+        print("connected motion socket")
+        with MotionMonitor() as m:
+            press_start = 0
+            n = 0
+            while True:
+                sent = websocket.receive(timeout=0.2)
+                n += 1
+                if sent:
+                    html = ""
+                    data = json.loads(sent)
+                    headers = data.pop("HEADERS")
+                    print(data)
+                    if "axis-button-movement" in data:  # axis movement
+                        movement = data["axis-button-movement"]
+                        state = data["axis-button-state"]
+
+                        print(movement, " ", state)
+                        if not movement in ["Xmin", "Xplus", "Ymin", "Yplus", "Zmin", "Zplus", "Amin", "Aplus"]:
+                            print("Unrecognized axis direction")
+                            return
+
+                        if state == "down" and not m.current_axis_movement:  # new press
+                            m.current_axis_movement = movement
+                            m.current_press_start = time.time()
+                            print("starting press in ", movement)
+                        elif state == "down":  # continued press
+                            print("still pressing in ", m.current_axis_movement)
+
+                        next_button_state = "up"
+                        if state == "up":
+                            m.current_axis_movement = None  # finished press
+                            next_button_state = "down"
+                            duration = time.time() - m.current_press_start
+                            print("press duration ", duration)
+
+                        button_symbol = {"Xmin": "&larr;", "Xplus": "&rarr;", "Ymin": "&darr;", "Yplus": "&uarr;",
+                                         "Zmin": "&darr;", "Zplus": "&uarr;"}
+                        key_bindings = {"Xmin": 37, "Xplus": 39, "Ymin": 40, "Yplus": 38,
+                                         "Zmin": "&darr;", "Zplus": "&uarr;"}
+                        html = self.render_template("direction_button.html",
+                                                            button_movement=movement,
+                                                            mouse_event=next_button_state,
+                                                            state_value=next_button_state,
+                                                            movement_value=movement,
+                                                            button_content=button_symbol[movement],
+                                                            key_binding=f"keyCode=={key_bindings[movement]}")
+                        # print(html)
+                        websocket.send(html)

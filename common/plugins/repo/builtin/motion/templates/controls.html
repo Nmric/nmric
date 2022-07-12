@@ -1,0 +1,25 @@
+{% import "snippets.html" as snippets %}
+    <script>
+        function moveTrigger() {
+            console.log("triggered")
+            return true
+        }
+    </script>
+
+<div hx-ext="ws" ws-connect="/plugins/stream/{{ id }}">
+    <div class="grid grid-cols-3 gap-2">
+        <div class="col-start-2 col-span-1">
+{{ snippets.control_direction_movement("Yplus", "down", "down", "Yplus", "&uarr;", "keyCode==38") }}
+        </div>
+        <div class="col-start-1 col-span-1">
+{{ snippets.control_direction_movement("Xmin", "down", "down", "Xmin", "&larr;", "keyCode==37") }}
+        </div>
+        <div class="col-start-3 col-span-1">
+{{ snippets.control_direction_movement("Xplus", "down", "down", "Xplus", "&rarr;", "keyCode==39") }}
+        </div>
+        <div class="col-start-2 col-span-1">
+{{ snippets.control_direction_movement("Ymin", "down", "down", "Ymin", "&darr;", "keyCode==40") }}
+        </div>
+    </div>
+
+</div>

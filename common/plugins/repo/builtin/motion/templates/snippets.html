@@ -1,0 +1,13 @@
+{% macro control_direction_movement(button_movement, mouse_event, state_value, movement_value, button_content, key_binding) -%}
+                                <form ws-send
+                                id="move-{{ button_movement }}"
+                                hx-trigger="mouse{{ mouse_event }}, key{{ mouse_event }}[{{ key_binding }}] from:body"
+                                hx-target="this" hx-swap="innerHTML"
+                                onsubmit="event.preventDefault();">
+                                    <div>
+                                        <button name="move-{{ button_movement }}">{{ button_content|safe }}</button>
+                                        <input type="hidden" name="axis-button-state" value="{{ state_value }}">
+                                        <input type="hidden" name="axis-button-movement" value="{{ movement_value }}">
+                                    </div>
+                                </form>
+{%- endmacro %}

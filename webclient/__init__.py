@@ -2,6 +2,7 @@ import zmq
 import time
 from multiprocessing import Process
 
+import flask
 from flask import Flask, g
 from flask_sock import Sock
 
@@ -48,7 +49,9 @@ sock = Sock(app)
 
 app.register_plugin_routes(sock)
 
-app.config["DATABASE_URI"] = 'sqlite:///sqlite.db'
+# print(app.url_map)
+
+# app.config["DATABASE_URI"] = 'sqlite:///persistence.db'
 #app.config["SQLALCHEMY_ECHO"] = False
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 

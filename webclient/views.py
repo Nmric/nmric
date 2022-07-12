@@ -2,6 +2,7 @@ import sqlite3
 import os
 import sys
 from pathlib import Path
+from inspect import getsourcefile
 
 import zmq
 from flask import render_template, request, jsonify, current_app
@@ -30,7 +31,7 @@ def home() -> str:
 
     # user = conn.execute("SELECT * from users").fetchone()
     # s = current_app.pm_builtin.plugins[1].render()
-
+    # print(os.path.dirname(getsourcefile(lambda:0)))
     l = Layout()
     layout_html = l.generate()
     # return "TEST " + s + " by " + user["username"]
