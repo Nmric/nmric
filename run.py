@@ -14,7 +14,7 @@ if __name__ == "__main__":
         log.warning("Database does not exist; generating new instance")
         connection = sqlite3.connect('persistence.db')
 
-        with open('persistence.sql') as f:
+        with open('db_schema/persistence.sql') as f:
             connection.executescript(f.read())
 
             cur = connection.cursor()

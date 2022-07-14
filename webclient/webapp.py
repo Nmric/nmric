@@ -3,6 +3,7 @@ from typing import Dict
 
 from flask import Flask, g
 from flask_sock import Sock
+import zmq
 
 from common.plugins.core.plugin_manager import PluginManager
 from common.plugins.core import DisplayPlugin
@@ -11,8 +12,18 @@ from common.plugins.core import DisplayPlugin
 class WebApp(Flask):
     plugin_manager = PluginManager(["common.plugins.repo.builtin", "common.plugins.repo.community"])
 
+    machine_host = "127.0.0.1"
+    request_port = 6668
+    listen_port = 6669
+
+    request_conn = None  # type: zmq.Socket
+    listen_conn = None  # type: zmq.Socket
+
     # def __init__(self):
         # self.register_plugin_routes()
+    def init_machine_connection(self) -> None:
+        self.request_conn = zmq.Context().socket(zmq.REQ)
+        self.request_conn.connect('tcp://{}:{}'.format(self.machine_host, self.request_port))
 
     def register_plugin_routes(self, sock: Sock = None) -> None:
 

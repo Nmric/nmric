@@ -48,6 +48,7 @@ app = WebApp(__name__)
 sock = Sock(app)
 
 app.register_plugin_routes(sock)
+app.init_machine_connection()
 
 # print(app.url_map)
 
